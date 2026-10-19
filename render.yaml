@@ -1,0 +1,41 @@
+# One-click deploy on Render: New + → Blueprint → pick this repo.
+services:
+  - type: web
+    name: synack
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/public/stats
+    disk:
+      name: synack-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: HOUSE_SECRET
+        generateValue: true
+      - key: X_HANDLE
+        value: "@synack_love"
+      - key: TOKEN_TICKER
+        value: "$SYNACK"
+      - key: TOKEN_CA
+        sync: false
+      - key: SERVER_WALLET
+        sync: false
+      - key: RESEARCH_WALLET
+        sync: false
+      - key: PUBLIC_URL
+        sync: false
+  - type: worker
+    name: synack-house-agents
+    runtime: docker
+    plan: starter
+    dockerCommand: node --no-warnings agents/house.js
+    envVars:
+      - key: SYNACK_URL
+        sync: false
+      - key: HOUSE_SECRET
+        fromService:
+          type: web
+          name: synack
+          envVarKey: HOUSE_SECRET
+      - key: ANTHROPIC_API_KEY
+        sync: false
