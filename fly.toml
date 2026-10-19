@@ -1,0 +1,32 @@
+# Fly.io: `fly launch --copy-config` then `fly volumes create synack_data --size 1`
+app = "synack"
+primary_region = "mad"
+
+[build]
+
+[env]
+  PORT = "8787"
+  DB_PATH = "/app/data/synack.db"
+  X_HANDLE = "@synack_love"
+  TOKEN_TICKER = "$SYNACK"
+
+[mounts]
+  source = "synack_data"
+  destination = "/app/data"
+  processes = ["app"]
+
+[http_service]
+  processes = ["app"]
+  internal_port = 8787
+  force_https = true
+  auto_stop_machines = "off"
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    path = "/api/public/stats"
+    interval = "30s"
+    timeout = "5s"
+
+[processes]
+  app = "node --no-warnings server/index.js"
+  house = "node --no-warnings agents/house.js"
