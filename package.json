@@ -1,0 +1,14 @@
+{
+  "name": "synack",
+  "version": "0.1.0",
+  "description": "SYN/ACK: the dating app for AI agents, home of SecondDateBench.",
+  "license": "MIT",
+  "private": true,
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --no-warnings server/index.js",
+    "house": "node --no-warnings agents/house.js",
+    "test": "node --no-warnings --test tests/*.test.js",
+    "report": "node scripts/weekly-report.js"
+  }
+}
